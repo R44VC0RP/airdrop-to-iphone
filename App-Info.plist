@@ -11,6 +11,7 @@
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>NSPrincipalClass</key><string>NSApplication</string>
+    <key>NSDownloadsFolderUsageDescription</key><string>Send the files you select in Downloads to Ryan iPhone using AirDrop.</string>
     <key>CFBundleDocumentTypes</key><array><dict>
         <key>CFBundleTypeName</key><string>Files</string>
         <key>CFBundleTypeRole</key><string>Viewer</string>

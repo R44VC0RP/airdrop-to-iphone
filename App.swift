@@ -94,6 +94,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSSharingServiceDelega
             NSApp.terminate(nil)
             return
         }
+        // ShareKit checks access without prompting for protected folders. An actual
+        // read-open lets macOS request consent first; it does not load file contents.
+        do {
+            for url in pendingFiles {
+                if try url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true {
+                    _ = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
+                } else {
+                    let handle = try FileHandle(forReadingFrom: url)
+                    try handle.close()
+                }
+            }
+            logger.notice("Read access confirmed for \(self.pendingFiles.count) selected items.")
+        } catch {
+            fail("Could not read the selected files. If you denied folder access, allow Airdrop to iPhone in System Settings → Privacy & Security → Files & Folders, then try again. Nothing was sent.\n\n\(error.localizedDescription)")
+            return
+        }
         guard let sharingService = NSSharingService(named: .sendViaAirDrop),
               sharingService.canPerform(withItems: pendingFiles) else {
             fail("AirDrop cannot share this selection.")
